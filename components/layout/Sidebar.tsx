@@ -8,6 +8,7 @@ import { LuTicketSlash } from "react-icons/lu";
 import { TbBuildingCommunity } from "react-icons/tb";
 import { FiUsers } from "react-icons/fi";
 import { TiDocumentText } from "react-icons/ti";
+import { MdOutlineCategory } from "react-icons/md";
 
 
 // Menu items.
@@ -18,20 +19,25 @@ const items = [
         icon: <LuTicketSlash size={16}/>,
     },
     {
-        title: "Institution",
+        title: "Users",
+        url: "users",
+        icon: <FiUsers size={16}/>,
+    },
+    {
+        title: "Institutions",
         url: "institutions",
         icon: <TbBuildingCommunity size={16}/>,
     },
     {
-        title: "Users",
-        url: "users",
-        icon: <FiUsers size={16}/>,
+        title: "Categories",
+        url: "category",
+        icon: <MdOutlineCategory size={16}/>,
     }
 ]
 
 export function AppSidebar() {
     return (
-        <div className={'w-[280px] bg-white flex flex-col justify-start items-start gap-4 p-4'}>
+        <div className={'w-[280px] bg-white hidden lg:flex flex-col justify-start items-start gap-4 p-4'}>
             {/*Logo*/}
             <Logo/>
             <ItemSeparator/>

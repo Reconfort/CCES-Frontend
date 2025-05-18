@@ -11,7 +11,7 @@ const Layout : FC<LayoutProps> = ({children}) => {
     return (
         <main className={'min-h-screen w-screen flex'}>
             <AppSidebar/>
-            <div className={'w-full flex flex-col p-2 lg:p-4'}>
+            <div className={'w-screen lg:w-full flex flex-col p-2 lg:p-4'}>
                 <TopHead/>
                 <div className={'w-full flex flex-col gap-4 mt-4 flex-1'}>
                 {children}
