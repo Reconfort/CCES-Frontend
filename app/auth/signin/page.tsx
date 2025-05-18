@@ -45,8 +45,8 @@ const Page = () => {
                     </div>
                     <div className={'flex items-center justify-between w-full text-sm'}>
                         <SubmitButton title={'Signin'} loadingText={'Signing in'}/>
-                        <p className={'text-slate-500'}>
-                            If you don't have an account, please{' '}
+                        <p className={'text-slate-500 flex items-center gap-1'}>
+                            <span className={'hidden md:block'}>If you don't have an account, please{' '}</span>
                             <Link href={'/auth/signup'} className={'text-black cursor-pointer'}>Create Account</Link>
                         </p>
                     </div>

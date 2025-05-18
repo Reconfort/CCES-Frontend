@@ -56,8 +56,8 @@ const Page = () => {
 
                 <div className="flex items-center justify-between w-full text-sm mt-4">
                     <SubmitButton title="Signup" loadingText="Signing up" />
-                    <p className="text-slate-500">
-                        Already have an account?{' '}
+                    <p className={'text-slate-500 flex items-center gap-1'}>
+                        <span className={'hidden md:block'}>Already have an account?{' '}</span>
                         <Link href="/auth/signin" className="text-black cursor-pointer">
                             Sign in
                         </Link>

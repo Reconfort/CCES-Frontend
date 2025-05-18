@@ -14,14 +14,9 @@ const Container = forwardRef<HTMLDivElement, ContainerProps>(
     ({ children, className, ...props }, ref) => (
         <div
             ref={ref}
-            className={clsx(
-                'w-screen flex justify-center items-center',
-                className
-            )}
-            {...props}
+            className={'w-screen flex justify-center items-center'}
         >
-            {/* Tailwind’s built-in responsive container */}
-            <div className="container mx-auto px-4">
+            <div className={clsx('container mx-auto px-4', className)} {...props}>
                 {children}
             </div>
         </div>

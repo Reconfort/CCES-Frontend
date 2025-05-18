@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/*Smooth scroll*/
+html {
+    scroll-behavior: smooth;
+}
+
 /*Loader*/
 .loader {
     width: 24px;
