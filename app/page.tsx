@@ -1,7 +1,7 @@
-import Header from "@/component/layout/Header";
-import HeroSection from "@/component/pages/sections/HeroSection";
-import AboutSection from "@/component/pages/sections/AboutSection";
-import FAQSection from "@/component/pages/sections/FAQSection";
+import Header from "@/components/layout/Header";
+import HeroSection from "@/components/pages/sections/HeroSection";
+import AboutSection from "@/components/pages/sections/AboutSection";
+import FAQSection from "@/components/pages/sections/FAQSection";
 
 export default function Home() {
     return (

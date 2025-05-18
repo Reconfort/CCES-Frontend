@@ -1,5 +1,5 @@
 import React, {FC} from 'react';
-import Container from "@/component/layout/Container";
+import Container from "@/components/layout/Container";
 import Link from "next/link";
 import {HiOutlineMenuAlt4} from "react-icons/hi";
 

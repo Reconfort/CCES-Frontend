@@ -2,8 +2,8 @@
 
 import React, { useRef } from 'react';
 import { Form, FormikValues, FormikHelpers, FormikProps } from 'formik';
-import AppForm from '@/component/forms/AppForm';
-import SubmitButton from '@/component/forms/SubmitButton';
+import AppForm from '@/components/forms/AppForm';
+import SubmitButton from '@/components/forms/SubmitButton';
 import * as Yup from 'yup';
 import Link from "next/link";
 

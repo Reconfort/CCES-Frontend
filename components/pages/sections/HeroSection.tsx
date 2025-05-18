@@ -1,8 +1,8 @@
 import React from 'react';
-import Container from "@/component/layout/Container";
+import Container from "@/components/layout/Container";
 import Link from "next/link";
 import { IoMdArrowDown } from 'react-icons/io';
-import ComplainForm from "@/component/features/ComplainForm";
+import ComplainForm from "@/components/features/ComplainForm";
 
 const HeroSection = () => {
     return (

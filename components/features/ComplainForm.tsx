@@ -2,10 +2,10 @@
 import React, {useEffect, useState, Fragment, JSX} from 'react';
 import * as Yup from 'yup';
 import {FormikHelpers, FormikValues, useFormikContext} from 'formik';
-import AppForm from '@/component/forms/AppForm';
-import AppInput from '@/component/forms/AppInput';
-import SubmitButton from '@/component/forms/SubmitButton';
-import ComboboxField from '@/component/forms/ComboBoxField';
+import AppForm from '@/components/forms/AppForm';
+import AppInput from '@/components/forms/AppInput';
+import SubmitButton from '@/components/forms/SubmitButton';
+import ComboboxField from '@/components/forms/ComboBoxField';
 import {FiCopy} from "react-icons/fi";
 import {PiShieldWarningThin} from "react-icons/pi";
 

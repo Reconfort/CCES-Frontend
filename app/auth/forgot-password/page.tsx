@@ -3,9 +3,9 @@ import React from 'react';
 import Link from "next/link";
 import { Form } from 'formik';
 import * as Yup from 'yup';
-import AppForm from "@/component/forms/AppForm";
-import SubmitButton from "@/component/forms/SubmitButton";
-import AppInput from "@/component/forms/AppInput";
+import AppForm from "@/components/forms/AppForm";
+import SubmitButton from "@/components/forms/SubmitButton";
+import AppInput from "@/components/forms/AppInput";
 import {useSignIn} from "@/hooks/useSignIn";
 
 // Define validation schema using Yup
