@@ -6,12 +6,24 @@ interface SidebarItemProps {
     label: string;
     className?: string;
     href: string;
+    active?: boolean;
 }
 
-const SidebarItem: FC<SidebarItemProps> = ({icon, label, className, href, ...etc}) => {
+const SidebarItem: FC<SidebarItemProps> = ({icon, label, className, href, active = false, ...etc}) => {
     return (
-        <Link href={href} className={`flex items-center gap-2 w-full p-2 rounded-lg hover:bg-white duration-1000 border border-transparent hover:border-slate-50 hover:shadow-xl shadow-slate-100 ${className}`} {...etc}>
-            <div className={'bg-black text-white size-9 rounded-md flex justify-center items-center'}>
+        <Link
+            href={href}
+            className={`
+                flex items-center gap-2 w-full p-2 rounded-lg
+                ${active ? 'bg-black text-white shadow-lg' : 'hover:bg-white text-black'}
+                duration-300 border border-transparent hover:border-slate-50 hover:shadow-xl shadow-slate-100
+                ${className}
+            `}
+            {...etc}
+        >
+            <div className={`size-9 rounded-md flex justify-center items-center 
+                ${active ? 'bg-white text-black' : 'bg-black text-white'}
+            `}>
                 {icon}
             </div>
             <span className={'text-sm'}>{label}</span>

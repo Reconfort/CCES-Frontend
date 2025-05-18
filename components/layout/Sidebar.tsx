@@ -1,7 +1,9 @@
+"use client";
 import React from "react";
+import { usePathname } from "next/navigation";
+
 import Logo from "@/components/ui/Logo";
 import ItemSeparator from "@/components/ui/ItemSeparator";
-
 import SidebarItem from "@/components/ui/SidebarItem";
 import { GrHomeRounded } from "react-icons/gr";
 import { LuTicketSlash } from "react-icons/lu";
@@ -36,18 +38,30 @@ const items = [
 ]
 
 export function AppSidebar() {
+    const pathname = usePathname();
     return (
         <div className={'w-[280px] bg-white hidden lg:flex flex-col justify-start items-start gap-4 p-4'}>
             {/*Logo*/}
             <Logo/>
             <ItemSeparator/>
 
-            <SidebarItem icon={<GrHomeRounded size={16}/>} href={'/dashboard'} label={'Dashboard'}/>
+            <SidebarItem
+                icon={<GrHomeRounded size={16} />}
+                href={'/dashboard'}
+                label={'Dashboard'}
+                active={pathname === '/dashboard'}
+            />
 
             <div className={'flex flex-col justify-start items-start gap-4 w-full'}>
                 <h1 className={'uppercase text-xs text-slate-600'}>Institution</h1>
                 {items.map((item) => (
-                    <SidebarItem key={item.title} icon={item.icon} href={`/dashboard/${item.url}`} label={item.title}/>
+                    <SidebarItem
+                        key={item.title}
+                        icon={item.icon}
+                        href={`/dashboard/${item.url}`}
+                        label={item.title}
+                        active={pathname === `/dashboard/${item.url}`}
+                    />
                 ))}
             </div>
 

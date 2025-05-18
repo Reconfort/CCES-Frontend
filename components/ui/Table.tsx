@@ -33,7 +33,7 @@ export const Table = <T extends Record<string, any>>({
             <div className={'flex justify-between items-center w-full'}>
                 <h1 className={'font-semibold'}>Table</h1>
                 <div className={'flex items-center gap-2 py-2'}>
-                    <TableFilter/>
+                    <TableFilter title="Filter" options={[]}/>
                     <TableSearch/>
                 </div>
             </div>

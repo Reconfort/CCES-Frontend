@@ -68,7 +68,7 @@ const DashboardPage = () => {
         responsive: true,
         plugins: {
             legend: {
-                position: 'top',
+                position: 'top' as 'top',
             },
             title: {
                 display: false,
@@ -80,7 +80,7 @@ const DashboardPage = () => {
             }
         },
         maintainAspectRatio: false,
-    };
+    } as const;
 
     // Chart data for ticket categories
     const categoryDistributionData = {
@@ -105,7 +105,7 @@ const DashboardPage = () => {
         responsive: true,
         plugins: {
             legend: {
-                position: 'right',
+                position: 'right' as const,
             },
             title: {
                 display: false,
@@ -131,7 +131,7 @@ const DashboardPage = () => {
         responsive: true,
         plugins: {
             legend: {
-                position: 'top',
+                position: 'top' as const,
             },
             title: {
                 display: false,

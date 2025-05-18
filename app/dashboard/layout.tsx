@@ -1,6 +1,5 @@
 import React, {FC} from 'react';
 import {AppSidebar} from "@/components/layout/Sidebar";
-import Breadcrumb from "@/components/ui/Breadcrumb";
 import TopHead from "@/components/layout/TopHead";
 
 interface  LayoutProps {
