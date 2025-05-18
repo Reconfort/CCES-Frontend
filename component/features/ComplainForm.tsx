@@ -1,115 +1,23 @@
 'use client';
-import React, { useEffect, useState, Fragment } from 'react';
+import React, {useEffect, useState, Fragment, JSX} from 'react';
 import * as Yup from 'yup';
-import { useFormikContext } from 'formik';
-import { Combobox, Transition } from '@headlessui/react';
-import { CheckIcon } from 'lucide-react';
-import AppForm from "@/component/forms/AppForm";
-import SubmitButton from "@/component/forms/SubmitButton";
-import AppInput from "@/component/forms/AppInput";
-import {LuChevronsUpDown} from "react-icons/lu";
+import {FormikHelpers, FormikValues, useFormikContext} from 'formik';
+import AppForm from '@/component/forms/AppForm';
+import AppInput from '@/component/forms/AppInput';
+import SubmitButton from '@/component/forms/SubmitButton';
+import ComboboxField from '@/component/forms/ComboBoxField';
+import {FiCopy} from "react-icons/fi";
+import {PiShieldWarningThin} from "react-icons/pi";
 
 const categories = ['Roads', 'Electricity', 'Water', 'Healthcare'];
 const institutions = ['City Council', 'Energy Department', 'Water Department', 'Health Ministry'];
 
 const existingComplaints = [
-    { id: 1, title: 'No street lights on Main St', category: 'Electricity' },
-    { id: 2, title: 'Potholes near Riverside', category: 'Roads' },
+    {id: 1, title: 'No street lights on Main St', category: 'Electricity'},
+    {id: 2, title: 'Potholes near Riverside', category: 'Roads'},
 ];
 
-interface ComboboxFieldProps {
-    label: string;
-    items: string[];
-    name: string;
-}
-
-const ComboboxField: React.FC<ComboboxFieldProps> = ({ label, items, name }) => {
-    const { values, setFieldValue } = useFormikContext<any>();
-    const [query, setQuery] = useState('');
-
-    const filtered =
-        query === ''
-            ? items
-            : items.filter((item) =>
-                item.toLowerCase().includes(query.toLowerCase())
-            );
-
-    return (
-        <div className="w-full group">
-            <label className="text-sm font-normal">{label}</label>
-            <div className="relative mt-1">
-                <Combobox
-                    value={values[name]}
-                    onChange={(val) => setFieldValue(name, val)}
-                >
-                    <div className="relative">
-                        <div className="flex items-center">
-                            <Combobox.Input
-                                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
-                                displayValue={(val: string) => val}
-                                onChange={(e) => setQuery(e.target.value)}
-                                placeholder={`Select ${label.toLowerCase()}...`}
-                            />
-                            <Combobox.Button className="absolute right-2">
-                                <LuChevronsUpDown className="h-5 w-5 text-gray-400" />
-                            </Combobox.Button>
-                        </div>
-                        <Transition
-                            as={Fragment}
-                            leave="transition ease-in duration-100"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
-                            className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                        >
-                            <Combobox.Options static>
-                                {filtered.length === 0 ? (
-                                    <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
-                                        No results found.
-                                    </div>
-                                ) : (
-                                    filtered.map((item) => (
-                                        <Combobox.Option
-                                            key={item}
-                                            value={item}
-                                            className={({ active }: { active: boolean }) =>
-                                                `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                                    active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
-                                                }`
-                                            }
-                                        >
-                                            {({ selected, active }) => (
-                                                <>
-                          <span
-                              className={`block truncate ${
-                                  selected ? 'font-medium' : 'font-normal'
-                              }`}
-                          >
-                            {item}
-                          </span>
-                                                    {selected && (
-                                                        <span
-                                                            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                                                                active ? 'text-blue-600' : 'text-blue-600'
-                                                            }`}
-                                                        >
-                              <CheckIcon className="h-5 w-5" />
-                            </span>
-                                                    )}
-                                                </>
-                                            )}
-                                        </Combobox.Option>
-                                    ))
-                                )}
-                            </Combobox.Options>
-                        </Transition>
-                    </div>
-                </Combobox>
-            </div>
-        </div>
-    );
-};
-
-const ComplaintForm = () => {
+const ComplaintForm = (): JSX.Element => {
     const [type, setType] = useState<'complaint' | 'feedback' | ''>('');
     const [submitted, setSubmitted] = useState(false);
     const [trackingId, setTrackingId] = useState('');
@@ -129,13 +37,25 @@ const ComplaintForm = () => {
         institution: Yup.string().required('Institution is required'),
     });
 
-    const handleSubmit = (values: typeof initialValues) => {
+    const handleSubmit = (values: FormikValues, helpers: FormikHelpers<FormikValues>) => {
         const id = 'CMP-' + Math.floor(Math.random() * 100000);
         setTrackingId(id);
         setSubmitted(true);
+        helpers.setSubmitting(false);
     };
 
-    const handleTitleFilter = (title: string) => {
+    const [copied, setCopied] = useState(false);
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(trackingId);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy!', err);
+        }
+    };
+
+    const filterRelated = (title: string) => {
         if (title.length > 3 && type === 'complaint') {
             const matches = existingComplaints.filter((c) =>
                 c.title.toLowerCase().includes(title.toLowerCase())
@@ -148,12 +68,25 @@ const ComplaintForm = () => {
 
     if (submitted) {
         return (
-            <div className="bg-green-100 p-6 rounded-xl mt-6">
-                <h2 className="text-xl font-bold text-green-800">✅ Submission Successful!</h2>
-                <p className="mt-2">
-                    Tracking ID: <span className="font-mono text-blue-700">{trackingId}</span>
-                </p>
-                <p className="mt-4">You can use this ID to check status later.</p>
+            <div className="bg-black text-white p-6 lg:p-12 rounded-3xl mt-24 w-full">
+                <h2 className="text-xl font-bold text-blue-500">✅ Submission Successful!</h2>
+
+                <div className={'flex items-center gap-4 mt-12'}>
+                    <p className="font-medium">
+                        Tracking ID: <span className="font-semibold text-blue-500">{trackingId}</span>
+                    </p>
+                    <button
+                        onClick={handleCopy}
+                        className="bg-white/10 p-4 rounded-xl cursor-pointer duration-75 hover:scale-110 active:scale-95 active:rounded-full flex items-center gap-2"
+                    >
+                        <FiCopy />
+                        {copied && <span className="text-sm">Copied!</span>}
+                    </button>
+                </div>
+                <div className={'border border-white p-4 lg:p-8 mt-4 rounded-xl flex items-center gap-4'}>
+                    <PiShieldWarningThin size={32}/>
+                    <p className="font-medium">You can use this ID to check status later.</p>
+                </div>
             </div>
         );
     }
@@ -164,14 +97,18 @@ const ComplaintForm = () => {
                 Send <span className="text-blue-500">Feedback</span> or Submit a{' '}
                 <span className="text-red-400">Complaint</span>
             </h1>
-
-            <div className="w-full border-2 bg-slate-100 border-white/80 shadow-xl p-8 rounded-3xl flex flex-col items-start gap-4">
+            <div
+                className={`w-full border-2 bg-slate-100 border-white/80 p-4 md:p-8 rounded-[32px] md:rounded-[46px] flex flex-col justify-start items-start gap-4 shadow-xl ${type === 'complaint' ? 'shadow-red-200' : 'shadow-blue-200' }`}>
                 <div className="flex mb-6 border border-slate-300 p-[1px] rounded-full">
                     {(['feedback', 'complaint'] as const).map((opt) => (
                         <button
                             key={opt}
-                            className={`px-6 py-3 rounded-full text-sm font-semibold ${
-                                type === opt ? (opt === 'feedback' ? 'bg-blue-500 text-white' : 'bg-red-400 text-white') : ''
+                            className={`px-6 py-2 md:py-3 rounded-full text-sm font-semibold ${
+                                type === opt
+                                    ? opt === 'feedback'
+                                        ? 'bg-blue-500 text-white'
+                                        : 'bg-red-400 text-white'
+                                    : ''
                             }`}
                             onClick={() => setType(opt)}
                         >
@@ -186,16 +123,22 @@ const ComplaintForm = () => {
                         onSubmit={handleSubmit}
                         validationSchema={validationSchema}
                     >
-                        {({ values }: { values: typeof initialValues }) => {
-                            useEffect(() => handleTitleFilter(values.title), [values.title]);
+                        {(formikProps: FormikValues & { isSubmitting: boolean }) => {
+                            const {values, isSubmitting} = formikProps;
+                            useEffect(() => filterRelated(values.title), [values.title]);
 
                             return (
-                                <div className="flex flex-col w-full gap-4">
-                                    <AppInput name="title" label="Title" className={'col-span-2'}/>
-                                    <AppInput name="message" label="Details" type="textarea" className="col-span- h-28" />
-                                    <div className={'grid grid-cols-2 gap-4'}>
-                                    <ComboboxField label="Category" items={categories} name="category" />
-                                    <ComboboxField label="Institution" items={institutions} name="institution" />
+                                <div className="w-full flex flex-col justify-start items-start gap-4">
+                                    <AppInput name="title" label="Title"/>
+                                    <AppInput
+                                        name="message"
+                                        label="Details"
+                                        type="textarea"
+                                        className="col-span-2 h-28"
+                                    />
+                                    <div className={'grid grid-cols-1 md:grid-cols-2 gap-4 w-full'}>
+                                        <ComboboxField label="Category" items={categories} name="category"/>
+                                        <ComboboxField label="Institution" items={institutions} name="institution"/>
                                     </div>
 
                                     {type === 'complaint' && relatedIssues.length > 0 && (
@@ -210,7 +153,7 @@ const ComplaintForm = () => {
                                     )}
 
                                     <div className="col-span-2">
-                                        <SubmitButton title={`Submit ${type}`} className={'!rounded-full'}/>
+                                        <SubmitButton title={`Submit ${type}`} className={'!rounded-full !font-medium'}/>
                                     </div>
                                 </div>
                             );
