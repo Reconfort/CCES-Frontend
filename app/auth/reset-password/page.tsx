@@ -1,13 +1,16 @@
-'use client'
-import React from 'react';
-import {Form, FormikValues} from 'formik';
-import * as Yup from 'yup';
-import AppForm from "@/component/forms/AppForm";
-import SubmitButton from "@/component/forms/SubmitButton";
-import AppInput from "@/component/forms/AppInput";
-import { useResetPassword } from "@/hooks/useResetPassword";
+'use client';
 
-// Validation Schema
+import React, { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Form, FormikValues } from 'formik';
+import * as Yup from 'yup';
+import AppForm from '@/component/forms/AppForm';
+import SubmitButton from '@/component/forms/SubmitButton';
+import AppInput from '@/component/forms/AppInput';
+import { useResetPassword } from '@/hooks/useResetPassword';
+import Link from "next/link";
+
+// Validation schema
 const validationSchema = Yup.object({
     newPassword: Yup.string()
         .min(6, 'Password must be at least 6 characters')
@@ -17,26 +20,26 @@ const validationSchema = Yup.object({
         .required('Confirm Password is required'),
 });
 
-const Page = () => {
+function ResetPasswordFormInner() {
+    const searchParams = useSearchParams();
+    const token = searchParams.get('token');
+
+    const { handleSubmit } = useResetPassword(token);
+
     const initialValues = {
         newPassword: '',
         confirmPassword: '',
     };
 
-    const { handleSubmit } = useResetPassword();
     const onSubmit = async (values: FormikValues) => {
         await handleSubmit({
             newPassword: values.newPassword as string,
-            confirmPassword: values.confirmPassword as string
+            confirmPassword: values.confirmPassword as string,
         });
     };
 
     return (
-        <AppForm
-            initialValues={initialValues}
-            onSubmit={onSubmit}
-            validationSchema={validationSchema}
-        >
+        <AppForm initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
             <Form className="w-full flex flex-col justify-start items-start gap-4">
                 <div>
                     <h2 className="text-2xl font-semibold">Reset Password</h2>
@@ -53,12 +56,21 @@ const Page = () => {
                     <AppInput label="Confirm Password" name="confirmPassword" type="password" />
                 </div>
 
-                <div className="flex items-center justify-between w-full text-sm">
+                <div className={'flex items-center justify-between w-full text-sm'}>
                     <SubmitButton title="Reset Password" loadingText="Resetting..." />
+                    <Link href={'/auth/signin'} className={'text-black cursor-pointer'}>Back to Sign in</Link>
                 </div>
             </Form>
         </AppForm>
     );
-};
+}
 
-export default Page;
+export default function ResetPasswordForm() {
+    return (
+        <Suspense fallback={<div className={'w-screen h-screen flex justify-center items-center'}>
+            <span className={'loader'}></span>
+        </div>}>
+            <ResetPasswordFormInner />
+        </Suspense>
+    );
+}

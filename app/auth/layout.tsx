@@ -19,7 +19,7 @@ const Layout :FC<LayoutProps> = ({children}) => {
                 initial={{ opacity: 0, y: 32 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: 'easeOut' }}
-                className={'bg-slate-200 border-2 border-black backdrop-blur md:mr-10 mb-4 p-4 lg:p-8 max-h-[800px] w-[94vw] md:w-[560px] xl:w-[620px] rounded-lg md:rounded-3xl duration-200 hover:shadow-2xl'}>
+                className={'bg-linear-to-bl from-slate-400/80 to-white/80 border border-white/80 duration-1000 backdrop-blur md:mr-10 mb-4 p-4 lg:p-8 max-h-[800px] w-[94vw] md:w-[560px] xl:w-[620px] rounded-lg md:rounded-3xl duration-200 shadow-2xl'}>
                 {children}
             </motion.div>
         </main>
