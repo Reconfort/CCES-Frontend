@@ -1,13 +1,12 @@
 'use client';
 
 import React, { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { Form, FormikValues } from 'formik';
 import * as Yup from 'yup';
 import AppForm from '@/components/forms/AppForm';
 import SubmitButton from '@/components/forms/SubmitButton';
 import AppInput from '@/components/forms/AppInput';
-import { useResetPassword } from '@/hooks/useResetPassword';
+import { useAuth } from '@/contexts/AuthContext';
 import Link from "next/link";
 
 // Validation schema
@@ -21,25 +20,19 @@ const validationSchema = Yup.object({
 });
 
 function ResetPasswordFormInner() {
-    const searchParams = useSearchParams();
-    const token = searchParams.get('token');
+    const { resetPassword } = useAuth();
 
-    const { handleSubmit } = useResetPassword(token);
+    const handleSubmit = (values: FormikValues) => {
+        resetPassword(values.newPassword, values.confirmPassword);
+    };
 
     const initialValues = {
         newPassword: '',
         confirmPassword: '',
     };
 
-    const onSubmit = async (values: FormikValues) => {
-        await handleSubmit({
-            newPassword: values.newPassword as string,
-            confirmPassword: values.confirmPassword as string,
-        });
-    };
-
     return (
-        <AppForm initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+        <AppForm initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
             <Form className="w-full flex flex-col justify-start items-start gap-4">
                 <div>
                     <h2 className="text-2xl font-semibold">Reset Password</h2>

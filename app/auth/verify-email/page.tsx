@@ -1,11 +1,14 @@
 'use client';
 
-import React, { useRef } from 'react';
-import { Form, FormikValues, FormikHelpers, FormikProps } from 'formik';
+import React, {useEffect, useRef, useState} from 'react';
+import {Form, FormikValues} from 'formik';
 import AppForm from '@/components/forms/AppForm';
 import SubmitButton from '@/components/forms/SubmitButton';
 import * as Yup from 'yup';
 import Link from "next/link";
+import {useAuth} from '@/contexts/AuthContext';
+import {useSearchParams} from 'next/navigation';
+import { FaAngleRight } from "react-icons/fa6";
 
 const validationSchema = Yup.object({
     code: Yup.string()
@@ -15,14 +18,22 @@ const validationSchema = Yup.object({
 
 const VerifyCodePage = () => {
     const inputsRef = useRef<HTMLInputElement[]>([]);
+    const searchParams = useSearchParams();
+    const email = searchParams.get('email') || '';
+    const [storedEmail, setStoredEmail] = useState('');
+    const {verifyCode} = useAuth();
+
+    useEffect(() => {
+        const savedEmail = localStorage.getItem('resetEmail');
+        setStoredEmail(email || savedEmail || '');
+    }, [email]);
 
     const initialValues = {
         code: '',
     };
 
-    const handleCodeSubmit = (values: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
-        console.log('Verification Code:', (values as typeof initialValues).code);
-        setSubmitting(false);
+    const handleCodeSubmit = (values: FormikValues) => {
+        verifyCode(storedEmail, values.code);
     };
 
     const handleInput = (
@@ -31,7 +42,7 @@ const VerifyCodePage = () => {
         setFieldValue: (field: string, value: any) => void,
         values: typeof initialValues
     ) => {
-        const val = e.target.value.replace(/\D/g, '').slice(0, 1); // Only one digit
+        const val = e.target.value.replace(/\\D/g, '').slice(0, 1); // Only one digit
         const updated = values.code.split('');
         updated[index] = val;
         const newCode = updated.join('');
@@ -44,7 +55,7 @@ const VerifyCodePage = () => {
     };
 
     const handleKeyDown = (
-        e: React.KeyboardEvent<HTMLInputElement>,
+        e: React.KeyboardEvent,
         index: number,
         values: typeof initialValues,
         setFieldValue: (field: string, value: any) => void
@@ -59,6 +70,23 @@ const VerifyCodePage = () => {
             }
         }
     };
+
+    if (!storedEmail) {
+        return (
+            <div>
+                <p>If you have registered your email, you will receive a verification code.</p>
+                <div className="flex items-center gap-3 mt-4">
+                    <span>Go back to</span>
+                    <Link
+                        className="bg-black text-white px-6 py-4 rounded-lg"
+                        href="/auth/forgot-password"
+                    >
+                        Forgot Password
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <AppForm
@@ -88,7 +116,7 @@ const VerifyCodePage = () => {
                                 value={values.code[index] || ''}
                                 onChange={(e) => handleInput(e, index, setFieldValue, values)}
                                 onKeyDown={(e) => handleKeyDown(e, index, values, setFieldValue)}
-                                className=" h-14 border-1 border-slate-900  text-center text-lg rounded-md focus:outline-none focus:border-black"
+                                className="h-14 border-1 border-slate-900 text-center text-lg rounded-md focus:outline-none focus:border-black"
                             />
                         ))}
                     </div>

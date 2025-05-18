@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 import AppForm from '@/components/forms/AppForm';
 import SubmitButton from '@/components/forms/SubmitButton';
 import AppInput from '@/components/forms/AppInput';
-import { useSignIn } from '@/hooks/useSignIn';
+import {useAuth} from "@/contexts/AuthContext";
 
 const validationSchema = Yup.object({
     username: Yup.string().min(4).required('Username is required'),
@@ -27,12 +27,12 @@ const initialValues = {
 };
 
 const Page = () => {
-    const { handleSubmit } = useSignIn();
+    const { signup } = useAuth();
 
     return (
         <AppForm
             initialValues={initialValues}
-            onSubmit={handleSubmit}
+            onSubmit={({ username, email, password }) => signup(username, email, password)}
             validationSchema={validationSchema}
         >
             <Form className="w-full flex flex-col justify-start items-start gap-4">

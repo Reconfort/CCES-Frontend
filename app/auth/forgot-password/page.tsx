@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import AppForm from "@/components/forms/AppForm";
 import SubmitButton from "@/components/forms/SubmitButton";
 import AppInput from "@/components/forms/AppInput";
-import {useSignIn} from "@/hooks/useSignIn";
+import { useAuth } from '@/contexts/AuthContext';
 
 // Define validation schema using Yup
 const validationSchema = Yup.object({
@@ -20,11 +20,16 @@ const Page = () => {
         email: '',
     };
 
-    const {handleSubmit} = useSignIn()
+    const { forgotPassword } = useAuth();
+
     return (
         <AppForm
             initialValues={initialValues}
-            onSubmit={handleSubmit}
+            onSubmit={({ email }) => {
+                localStorage.setItem('resetEmail', email);
+                forgotPassword(email);
+            }
+        }
             validationSchema={validationSchema}>
             <Form className={'w-full flex flex-col justify-start items-start gap-4'}>
                 <div>
