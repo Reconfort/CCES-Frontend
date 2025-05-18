@@ -1,4 +1,6 @@
+'use client';
 import React, {FC} from 'react';
+import { motion } from 'framer-motion';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -13,9 +15,13 @@ const Layout :FC<LayoutProps> = ({children}) => {
                     "url('https://images.unsplash.com/photo-1489640818597-89b1edc97db5?q=80&w=3870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
             }}
         >
-            <div className={'bg-white/30 border-2 border-white/60 backdrop-blur md:right-10 mb-4 p-8 max-h-[800px] w-[94vw] md:w-[560px] xl:w-[620px] rounded-3xl duration-200 hover:shadow-2xl'}>
+            <motion.div
+                initial={{ opacity: 0, y: 32 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
+                className={'bg-slate-200 border-2 border-black backdrop-blur md:mr-10 mb-4 p-4 lg:p-8 max-h-[800px] w-[94vw] md:w-[560px] xl:w-[620px] rounded-lg md:rounded-3xl duration-200 hover:shadow-2xl'}>
                 {children}
-            </div>
+            </motion.div>
         </main>
     );
 };
