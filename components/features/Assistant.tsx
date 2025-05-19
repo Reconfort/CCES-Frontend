@@ -30,7 +30,7 @@ const Assistant: React.FC = () => {
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 1,
-            text: "Hello! I am BOBOT, How can I help you today?",
+            text: "Hello! I am CES Assistant, How can I help you today?",
             sender: "bot",
             timestamp: new Date().toLocaleTimeString(),
         },
@@ -188,7 +188,7 @@ const Assistant: React.FC = () => {
                 <div className="fixed bottom-0 right-0 z-50 m-4 w-[9  0vw] md:w-[460px] h-[600px] flex flex-col bg-white border border-slate-200 rounded-2xl shadow-xl">
                     <div className="flex justify-between items-center p-4 border-b border-slate-200">
                         <div className="flex items-center">
-                            <h3 className="font-medium">Bohoka BOT</h3>
+                            <h3 className="font-medium">CES BOT</h3>
                             {apiStatus === "connected" && (
                                 <span
                                     className="ml-2 inline-block w-2 h-2 bg-green-500 rounded-full"
