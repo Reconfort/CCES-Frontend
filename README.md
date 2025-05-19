@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CCES Frontend
 
-## Getting Started
+A modern, responsive web application built with Next.js and React, featuring a beautiful UI and robust functionality.
 
-First, run the development server:
+## 🚀 Technology Stack
 
+- **Framework**: Next.js 15.3.2
+- **Language**: TypeScript
+- **UI Library**: React 19
+- **Styling**: Tailwind CSS
+- **Form Handling**: Formik with Yup validation
+- **State Management**: React Context API
+- **UI Components**: 
+  - Framer Motion (Animations)
+- **Data Visualization**: Chart.js with react-chartjs-2
+- **HTTP Client**: Axios
+- **Notifications**: React Hot Toast
+- **Icons**: Lucide React & React Icons
+
+## 📋 Prerequisites
+
+Before you begin, ensure you have the following installed:
+- Node.js (Latest LTS version recommended)
+- npm or yarn package manager
+- Git
+
+## 🛠️ Installation
+
+1. Clone the repository:
+```bash
+git clone [git@github.com:Reconfort/CCES-Frontend.git]
+cd CCES-Frontend
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Create a `.env.local` file in the root directory and add necessary environment variables:
+```env
+# Add your environment variables here
+```
+
+## 🚀 Running the Application
+
+### Development Mode
 ```bash
 npm run dev
 # or
 yarn dev
+```
+The application will be available at `http://localhost:3000`
+
+### Production Build
+```bash
+npm run build
+npm start
 # or
-pnpm dev
-# or
-bun dev
+yarn build
+yarn start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📁 Project Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+CCES-Frontend/
+├── app/              # Next.js app directory
+├── components/       # Reusable React components
+├── contexts/        # React Context providers
+├── hooks/           # Custom React hooks
+├── lib/             # Utility functions and configurations
+├── models/          # TypeScript interfaces and types
+├── public/          # Static assets
+└── styles/          # Global styles and Tailwind configurations
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🧪 Available Scripts
 
-## Learn More
+- `npm run dev` - Start development server with Turbopack
+- `npm run build` - Build the application for production
+- `npm run start` - Start the production server
+- `npm run lint` - Run ESLint for code linting
 
-To learn more about Next.js, take a look at the following resources:
+## 🎨 Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Modern and responsive UI design
+- Type-safe development with TypeScript
+- Form validation with Formik and Yup
+- Interactive charts and data visualization
+- Smooth animations with Framer Motion
+- Toast notifications for user feedback
+- Component-based architecture
+- Custom hooks for reusable logic
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🤝 Contributing
 
-## Deploy on Vercel
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📝 License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 👥 Authors
+
+- Reconfort Daniel - Initial work
