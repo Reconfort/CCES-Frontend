@@ -2,6 +2,12 @@
 
 A modern, responsive web application built with Next.js and React, featuring a beautiful UI and robust functionality.
 
+## Plan
+https://hyper-impulse-d65.notion.site/Citizen-Complaints-and-Engagement-System-383a63ae4f4f4afc9cebb51868e95381
+
+## Live Demo
+[Live Demo](https://cces-frontend-git-main-reconforts-projects.vercel.app/)
+
 ## 🚀 Technology Stack
 
 - **Framework**: Next.js 15.3.2
