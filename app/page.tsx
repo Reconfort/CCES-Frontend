@@ -9,8 +9,8 @@ export default function Home() {
         <main className={'min-h-screen w-screen'}>
             <Header/>
             <HeroSection/>
-            <AboutSection/>
-            <FAQSection/>
+            {/*<AboutSection/>*/}
+            {/*<FAQSection/>*/}
             <Assistant/>
         </main>
     );

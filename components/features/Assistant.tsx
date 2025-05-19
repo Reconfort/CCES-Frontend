@@ -4,7 +4,8 @@ import { FcAssistant } from "react-icons/fc";
 import { IoClose } from "react-icons/io5";
 import { AiOutlineSend } from "react-icons/ai";
 import Bubble from "../ui/Bubble";
-import api from "@/lib/api";
+
+const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
 type Message = {
     id: number;
@@ -29,7 +30,7 @@ const Assistant: React.FC = () => {
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 1,
-            text: "Hello! I am CES Assistant, How can I help you today?",
+            text: "Hello! I am BOBOT, How can I help you today?",
             sender: "bot",
             timestamp: new Date().toLocaleTimeString(),
         },
@@ -37,17 +38,29 @@ const Assistant: React.FC = () => {
     const [inputValue, setInputValue] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [sessionId, setSessionId] = useState<string | null>(null);
-    const [apiStatus, setApiStatus] = useState<"unknown" | "connected" | "error">("unknown");
+    const [apiStatus, setApiStatus] = useState<"unknown" | "connected" | "error">(
+        "unknown"
+    );
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-    // Test API connection on mount
+    // Test API connection when component mounts
     useEffect(() => {
         const testApiConnection = async () => {
             try {
-                const res = await api.post("/gemini", { prompt: "test connection" });
-                if (res.status === 200) {
+                const apiUrl = getApiUrl();
+                console.log(`Testing API connection to: ${apiUrl}`);
+
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt: "test connection" }),
+                });
+
+                if (response.ok) {
+                    console.log("API connection successful");
                     setApiStatus("connected");
                 } else {
+                    console.error("API connection failed:", response.status);
                     setApiStatus("error");
                 }
             } catch (error) {
@@ -55,6 +68,7 @@ const Assistant: React.FC = () => {
                 setApiStatus("error");
             }
         };
+
         testApiConnection();
     }, []);
 
@@ -62,14 +76,22 @@ const Assistant: React.FC = () => {
         setIsOpen((prev) => !prev);
     };
 
+    // Scroll to bottom when messages change
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages, isLoading]);
+
+    // Get API URL from environment or use a fallback
+    const getApiUrl = () => {
+        // In a Next.js application, we need to use NEXT_PUBLIC_ prefix for client-side env variables
+        return `${apiUrl}/gemini`;
+    };
 
     const handleSend = async () => {
         const prompt = inputValue.trim();
         if (!prompt) return;
 
+        // Add user message
         const userMsg: Message = {
             id: Date.now(),
             text: prompt,
@@ -77,21 +99,38 @@ const Assistant: React.FC = () => {
             timestamp: new Date().toLocaleTimeString(),
             delivered: true,
         };
-
         setMessages((prev) => [...prev, userMsg]);
         setInputValue("");
-        setIsLoading(true);
 
+        // Call API
+        setIsLoading(true);
         try {
             const requestBody: GeminiRequest = { prompt };
+
+            // Include sessionId if we have one from previous interactions
             if (sessionId) {
                 requestBody.sessionId = sessionId;
             }
 
-            const res = await api.post<GeminiResponse>("/gemini", requestBody);
-            const data = res.data;
+            const apiUrl = getApiUrl();
+            console.log(`Sending request to: ${apiUrl}`);
 
-            if (data.sessionId) setSessionId(data.sessionId);
+            const res = await fetch(apiUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Add CORS headers if needed
+                    "Access-Control-Allow-Origin": "*",
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            const data = (await res.json()) as GeminiResponse;
+
+            // Store sessionId for future requests
+            if (data.sessionId) {
+                setSessionId(data.sessionId);
+            }
 
             const botMsg: Message = {
                 id: Date.now() + 1,
@@ -99,15 +138,18 @@ const Assistant: React.FC = () => {
                 sender: "bot",
                 timestamp: new Date().toLocaleTimeString(),
             };
-
             setMessages((prev) => [...prev, botMsg]);
         } catch (err) {
             console.error("API error:", err);
             setApiStatus("error");
 
             let errorMessage = "Sorry, something went wrong.";
+
+            // Provide more specific error messages
             if (err instanceof TypeError && err.message.includes("fetch")) {
-                errorMessage = "Unable to connect to the assistant API. Please check the server.";
+                errorMessage =
+                    "Unable to connect to the assistant API. Please check that the API server is running on port " +
+                    (apiUrl) + ".";
             } else if (err instanceof Error) {
                 errorMessage = `Error: ${err.message}`;
             }
@@ -118,7 +160,6 @@ const Assistant: React.FC = () => {
                 sender: "bot",
                 timestamp: new Date().toLocaleTimeString(),
             };
-
             setMessages((prev) => [...prev, errorMsg]);
         } finally {
             setIsLoading(false);
@@ -144,24 +185,37 @@ const Assistant: React.FC = () => {
             </button>
 
             {isOpen && (
-                <div className="fixed bottom-0 right-0 z-50 m-4 w-[90vw] md:w-[460px] h-[600px] flex flex-col bg-white border border-slate-200 rounded-2xl shadow-xl">
+                <div className="fixed bottom-0 right-0 z-50 m-4 w-[9  0vw] md:w-[460px] h-[600px] flex flex-col bg-white border border-slate-200 rounded-2xl shadow-xl">
                     <div className="flex justify-between items-center p-4 border-b border-slate-200">
                         <div className="flex items-center">
-                            <h3 className="font-medium">CES BOT</h3>
+                            <h3 className="font-medium">Bohoka BOT</h3>
                             {apiStatus === "connected" && (
-                                <span className="ml-2 w-2 h-2 bg-green-500 rounded-full" title="API Connected"></span>
+                                <span
+                                    className="ml-2 inline-block w-2 h-2 bg-green-500 rounded-full"
+                                    title="API Connected"
+                                ></span>
                             )}
                             {apiStatus === "error" && (
-                                <span className="ml-2 w-2 h-2 bg-red-500 rounded-full" title="API Error"></span>
+                                <span
+                                    className="ml-2 inline-block w-2 h-2 bg-red-500 rounded-full"
+                                    title="API Connection Error"
+                                ></span>
                             )}
                             {apiStatus === "unknown" && (
-                                <span className="ml-2 w-2 h-2 bg-yellow-500 rounded-full" title="Checking API..."></span>
+                                <span
+                                    className="ml-2 inline-block w-2 h-2 bg-yellow-500 rounded-full"
+                                    title="Checking API Connection..."
+                                ></span>
                             )}
                         </div>
-                        <IoClose size={24} className="cursor-pointer text-black" onClick={toggleAssistant} />
+                        <IoClose
+                            size={24}
+                            className="cursor-pointer text-black"
+                            onClick={toggleAssistant}
+                        />
                     </div>
 
-                    {/* Messages */}
+                    {/* Message List */}
                     <div className="flex-1 px-4 py-2 overflow-y-auto space-y-2">
                         {messages.map((msg) => (
                             <Bubble
@@ -173,7 +227,9 @@ const Assistant: React.FC = () => {
                             />
                         ))}
                         {isLoading && (
-                            <div className="text-sm italic text-slate-500 my-2">Assistant is thinking...</div>
+                            <div className="text-sm italic text-slate-500 my-2">
+                                Assistant is thinking...
+                            </div>
                         )}
                         <div ref={messagesEndRef} />
                     </div>
