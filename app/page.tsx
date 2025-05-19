@@ -2,6 +2,7 @@ import Header from "@/components/layout/Header";
 import HeroSection from "@/components/pages/sections/HeroSection";
 import AboutSection from "@/components/pages/sections/AboutSection";
 import FAQSection from "@/components/pages/sections/FAQSection";
+import Assistant from "@/components/features/Assistant";
 
 export default function Home() {
     return (
@@ -10,6 +11,7 @@ export default function Home() {
             <HeroSection/>
             <AboutSection/>
             <FAQSection/>
+            <Assistant/>
         </main>
     );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import React, {FC, ReactNode} from 'react';
+import React, {ReactNode} from 'react';
 import Pagination from './Pagination';
 import TableFilter from "@/components/ui/TableFilter";
 import TableSearch from "@/components/ui/TableSearch";

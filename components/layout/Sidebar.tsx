@@ -11,6 +11,7 @@ import { TbBuildingCommunity } from "react-icons/tb";
 import { FiUsers } from "react-icons/fi";
 import { TiDocumentText } from "react-icons/ti";
 import { MdOutlineCategory } from "react-icons/md";
+import Link from "next/link";
 
 
 // Menu items.
@@ -79,9 +80,11 @@ export function AppSidebar() {
                 <h2 className={'mt-6 text-sm text'}>Need help?</h2>
                 <p className={'text-sm'}>Please check our docs</p>
 
-                <button className={'bg-white hover:bg-black hover:text-white duration-1000 cursor-pointer p-2 text-xs rounded-md w-full mt-2'}>
+                <Link
+                    target={'_blank'}
+                    href={'https://hyper-impulse-d65.notion.site/Citizen-Complaints-and-Engagement-System-383a63ae4f4f4afc9cebb51868e95381'} className={'bg-white hover:bg-black hover:text-white duration-1000 cursor-pointer p-2 text-xs rounded-md w-full mt-2'}>
                     DOCUMENTATION
-                </button>
+                </Link>
             </div>
 
         </div>

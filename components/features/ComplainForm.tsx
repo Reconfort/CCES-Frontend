@@ -1,53 +1,78 @@
 'use client';
-import React, {useEffect, useState, Fragment, JSX} from 'react';
+import React, {useEffect, useState, JSX} from 'react';
 import * as Yup from 'yup';
-import {FormikHelpers, FormikValues, useFormikContext} from 'formik';
+import {FormikHelpers, FormikValues} from 'formik';
 import AppForm from '@/components/forms/AppForm';
 import AppInput from '@/components/forms/AppInput';
 import SubmitButton from '@/components/forms/SubmitButton';
 import ComboboxField from '@/components/forms/ComboBoxField';
 import {FiCopy} from "react-icons/fi";
 import {PiShieldWarningThin} from "react-icons/pi";
-
-const categories = ['Roads', 'Electricity', 'Water', 'Healthcare'];
-const institutions = ['City Council', 'Energy Department', 'Water Department', 'Health Ministry'];
+import { useInstitutions } from '@/hooks/useInstitutions';
+import useCategories from "@/hooks/useCategory";
+import useSubmitTicket from "@/hooks/useSubmitTicket";
 
 const existingComplaints = [
     {id: 1, title: 'No street lights on Main St', category: 'Electricity'},
     {id: 2, title: 'Potholes near Riverside', category: 'Roads'},
 ];
 
+const USER_ID = process.env.NEXT_PUBLIC_DEFAULT_USER_ID || '68284fc1537af1f1655a4a12';
+
 const ComplaintForm = (): JSX.Element => {
-    const [type, setType] = useState<'complaint' | 'feedback' | ''>('');
+    const [type, setType] = useState<'complaint' | 'feedback' | ''>('complaint');
     const [submitted, setSubmitted] = useState(false);
-    const [trackingId, setTrackingId] = useState('');
     const [relatedIssues, setRelatedIssues] = useState<typeof existingComplaints>([]);
+
+    // Fetch categories and institutions
+    const { categories, loading: categoriesLoading } = useCategories();
+    const { institutions, isLoading: institutionsLoading } = useInstitutions();
+
+    // Use our new ticket hook
+    const { submitTicket, loading: submittingTicket, error: submitError, ticketId } = useSubmitTicket();
+
+    // Format categories and institutions for the ComboboxField
+    const categoryOptions = categories.map(category => ({
+        label: category.name,
+        value: category.id
+    }));
+
+    const institutionOptions = institutions.map(institution => ({
+        label: institution.name,
+        value: institution.id
+    }));
 
     const initialValues = {
         title: '',
         message: '',
-        category: '',
-        institution: '',
+        categoryId: '',
+        institutionId: '',
     };
 
     const validationSchema = Yup.object().shape({
         title: Yup.string().min(4, 'Too short').required('Title is required'),
         message: Yup.string().min(10, 'Too short').required('Message is required'),
-        category: Yup.string().required('Category is required'),
-        institution: Yup.string().required('Institution is required'),
+        categoryId: Yup.string().required('Category is required'),
+        institutionId: Yup.string().required('Institution is required'),
     });
 
-    const handleSubmit = (values: FormikValues, helpers: FormikHelpers<FormikValues>) => {
-        const id = 'CMP-' + Math.floor(Math.random() * 100000);
-        setTrackingId(id);
-        setSubmitted(true);
-        helpers.setSubmitting(false);
+    const handleSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>) => {
+        try {
+            await submitTicket(values, USER_ID);
+            setSubmitted(true);
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        } finally {
+            helpers.setSubmitting(false);
+        }
     };
 
     const [copied, setCopied] = useState(false);
     const handleCopy = async () => {
+        if (!ticketId) return;
+
         try {
-            await navigator.clipboard.writeText(trackingId);
+            await navigator.clipboard.writeText(ticketId);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
         } catch (err) {
@@ -66,14 +91,14 @@ const ComplaintForm = (): JSX.Element => {
         }
     };
 
-    if (submitted) {
+    if (submitted && ticketId) {
         return (
             <div className="bg-black text-white p-6 lg:p-12 rounded-3xl mt-24 w-full">
                 <h2 className="text-xl font-bold text-blue-500">✅ Submission Successful!</h2>
 
                 <div className={'flex items-center gap-4 mt-12'}>
                     <p className="font-medium">
-                        Tracking ID: <span className="font-semibold text-blue-500">{trackingId}</span>
+                        Tracking ID: <span className="font-semibold text-blue-500">{ticketId}</span>
                     </p>
                     <button
                         onClick={handleCopy}
@@ -88,6 +113,18 @@ const ComplaintForm = (): JSX.Element => {
                     <p className="font-medium">You can use this ID to check status later.</p>
                 </div>
             </div>
+        );
+    }
+
+    // Show loading state while fetching categories and institutions
+    if (categoriesLoading || institutionsLoading) {
+        return (
+            <section className="w-full mt-12">
+                <h1 className="text-2xl font-bold mb-6 text-slate-600">Loading...</h1>
+                <div className="w-full bg-slate-100 p-8 rounded-[32px] shadow-xl flex justify-center items-center h-64">
+                    <div className="animate-pulse">Loading form data...</div>
+                </div>
+            </section>
         );
     }
 
@@ -117,6 +154,12 @@ const ComplaintForm = (): JSX.Element => {
                     ))}
                 </div>
 
+                {submitError && (
+                    <div className="w-full bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
+                        <p className="font-medium">{submitError}</p>
+                    </div>
+                )}
+
                 {type && (
                     <AppForm
                         initialValues={initialValues}
@@ -137,8 +180,18 @@ const ComplaintForm = (): JSX.Element => {
                                         className="col-span-2 h-28"
                                     />
                                     <div className={'grid grid-cols-1 md:grid-cols-2 gap-4 w-full'}>
-                                        <ComboboxField label="Category" items={categories} name="category"/>
-                                        <ComboboxField label="Institution" items={institutions} name="institution"/>
+                                        <ComboboxField
+                                            label="Category"
+                                            items={categoryOptions.map(cat => cat.label)}
+                                            name="categoryId"
+                                            valueKey={categoryOptions}
+                                        />
+                                        <ComboboxField
+                                            label="Institution"
+                                            items={institutionOptions.map(inst => inst.label)}
+                                            name="institutionId"
+                                            valueKey={institutionOptions}
+                                        />
                                     </div>
 
                                     {type === 'complaint' && relatedIssues.length > 0 && (
@@ -153,7 +206,10 @@ const ComplaintForm = (): JSX.Element => {
                                     )}
 
                                     <div className="col-span-2">
-                                        <SubmitButton title={`Submit ${type}`} className={'!rounded-full !font-medium'}/>
+                                        <SubmitButton
+                                            title={`Submit ${type}`}
+                                            className={'!rounded-full !font-medium'}
+                                        />
                                     </div>
                                 </div>
                             );

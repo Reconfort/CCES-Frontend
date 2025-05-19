@@ -1,58 +1,17 @@
+'use client';
+
 import React from 'react';
-import CategoryTable, {Category} from "@/components/tables/CategoryTable";
-import {FilterOption} from "@/components/ui/TableFilter";
-import {IoIosAdd} from "react-icons/io";
-
-const dummyData: Category[] = [
-    {
-        id: 'water-issues',
-        name: 'Water Supply Issues',
-        description: 'Issues related to water supply, quality, or distribution',
-        count: 56,
-        routingAgency: 'Water & Sanitation Department'
-    },
-    {
-        id: 'electricity',
-        name: 'Electricity Problems',
-        description: 'Issues related to electricity supply, outages, or billing',
-        count: 97,
-        routingAgency: 'Electricity Services Agency'
-    },
-    {
-        id: 'road-maintenance',
-        name: 'Road Maintenance',
-        description: 'Issues related to roads, potholes, street lights, or traffic signals',
-        count: 124,
-        routingAgency: 'Transportation Department'
-    },
-    {
-        id: 'waste-management',
-        name: 'Waste Management',
-        description: 'Issues related to garbage collection, waste disposal, or recycling',
-        count: 85,
-        routingAgency: 'Environmental Services'
-    },
-    {
-        id: 'public-safety',
-        name: 'Public Safety',
-        description: 'Issues related to public safety, security, or law enforcement',
-        count: 63,
-        routingAgency: 'Department of Public Safety'
-    }
-];
-
-const categoryFilterOptions: FilterOption[] = [
-    {id: 'water-sanitation', label: 'Water & Sanitation', count: 56},
-    {id: 'electricity', label: 'Electricity', count: 97},
-    {id: 'transportation', label: 'Transportation', count: 124},
-    {id: 'environment', label: 'Environment', count: 85},
-    {id: 'public-safety', label: 'Public Safety', count: 63}
-];
+import CategoryTable from "@/components/tables/CategoryTable";
+import { IoIosAdd } from "react-icons/io";
+import useCategories from "@/hooks/useCategory";
+import Loader from "@/components/ui/Loader";
 
 const Page = () => {
+    const { categories, loading, error } = useCategories();
+
     return (
-        <main className={'w-full'}>
-            <div className={'flex justify-between items-start'}>
+        <main className="w-full">
+            <div className="flex justify-between items-start">
                 <div className="mb-6">
                     <h1 className="text-2xl font-bold mb-2">Categories</h1>
                     <p className="text-gray-600">
@@ -64,7 +23,17 @@ const Page = () => {
                 </button>
             </div>
 
-            <CategoryTable data={dummyData}/>
+            {loading ? (
+                <div className="flex justify-center items-center h-64">
+                    <Loader size={'lg'}/>
+                </div>
+            ) : error ? (
+                <div className="text-red-500 p-4 bg-red-50 rounded-md">
+                    {error}
+                </div>
+            ) : (
+                <CategoryTable data={categories} />
+            )}
         </main>
     );
 };

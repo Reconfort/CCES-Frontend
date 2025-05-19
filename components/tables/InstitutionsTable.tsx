@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { FC } from 'react';
@@ -10,6 +11,7 @@ export interface Institution {
     serviceType: string;
     email: string;
     phone: string;
+    address?: string;
 }
 
 interface InstitutionsTableProps {
@@ -18,15 +20,36 @@ interface InstitutionsTableProps {
 
 const InstitutionsTable: FC<InstitutionsTableProps> = ({ data }) => {
     const columns: Column<Institution>[] = [
-        { header: 'Institution Name', accessor: 'name', headerClassName: 'font-medium text-gray-900 dark:text-white' },
-        { header: 'Service Type', accessor: 'serviceType' },
+        {
+            header: 'Institution Name',
+            accessor: 'name',
+            headerClassName: 'font-medium text-gray-900 dark:text-white'
+        },
+        {
+            header: 'Address',
+            accessor: 'address',
+            cell: (row) => row.address || 'N/A'
+        },
+        {
+            header: 'Service Type',
+            accessor: 'serviceType',
+            cell: (row) => row.serviceType || 'N/A'
+        },
         {
             header: 'Contact Email',
-            cell: (row) => <a href={`mailto:${row.email}`} className="hover:underline">{row.email}</a>,
+            cell: (row) => row.email ? (
+                <a href={`mailto:${row.email}`} className="hover:underline">{row.email}</a>
+            ) : (
+                <span className="text-gray-400">Not available</span>
+            ),
         },
         {
             header: 'Contact Phone',
-            cell: (row) => <a href={`tel:${row.phone}`} className="hover:underline">{row.phone}</a>,
+            cell: (row) => row.phone ? (
+                <a href={`tel:${row.phone}`} className="hover:underline">{row.phone}</a>
+            ) : (
+                <span className="text-gray-400">Not available</span>
+            ),
         },
         {
             header: 'Actions',

@@ -5,8 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 
 const menuItems = [
-    { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Settings', href: '/dashboard/setting' },
+    { label: 'Profile', href: '#' },
     { label: 'Sign out', href: '/auth/signin', isDivider: true },
 ];
 
@@ -44,7 +43,7 @@ const Profile: FC = () => {
                 aria-expanded={isOpen}
                 className="w-10 h-10 flex items-center justify-center bg-gray-100 dark:bg-gray-600 rounded-full focus:outline-none"
             >
-                <span className="font-medium text-gray-600 dark:text-gray-300">JL</span>
+                <span className="font-medium text-gray-600 dark:text-gray-300">RD</span>
             </button>
 
             {isOpen && (
@@ -54,8 +53,8 @@ const Profile: FC = () => {
                     aria-labelledby="avatarButton"
                 >
                     <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
-                        <div>Bonnie Green</div>
-                        <div className="font-medium truncate">name@flowbite.com</div>
+                        <div>Reconfort Daniel</div>
+                        <div className="font-medium truncate">reconfortdanny@gmail.com</div>
                     </div>
 
                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">

@@ -3,21 +3,14 @@
 import React, { FC } from 'react';
 import Link from 'next/link';
 import { Table, Column } from '@/components/ui/Table';
-
-export interface Category {
-    id: string;
-    name: string;
-    description: string;
-    count: number;
-    routingAgency: string;
-}
+import { CategoryForDisplay } from '@/hooks/useCategory';
 
 interface CategoryTableProps {
-    data: Category[];
+    data: CategoryForDisplay[];
 }
 
 const CategoryTable: FC<CategoryTableProps> = ({ data }) => {
-    const columns: Column<Category>[] = [
+    const columns: Column<CategoryForDisplay>[] = [
         {
             header: 'Category Name',
             accessor: 'name',
@@ -48,7 +41,7 @@ const CategoryTable: FC<CategoryTableProps> = ({ data }) => {
         },
     ];
 
-    return <Table<Category> columns={columns} data={data} rowKey="id" />;
+    return <Table<CategoryForDisplay> columns={columns} data={data} rowKey="id" />;
 };
 
 export default CategoryTable;

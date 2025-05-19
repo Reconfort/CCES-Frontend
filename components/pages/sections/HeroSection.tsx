@@ -6,7 +6,7 @@ import ComplainForm from "@/components/features/ComplainForm";
 
 const HeroSection = () => {
     return (
-        <section id={'/'} className={'bg-slate-200 min-h-[60vh] rounded-b-[32px] md:rounded-b-[100px] pt-[102px]'}>
+        <section id={'/'} className={'bg-slate-200 min-h-screen rounded-b-[32px] md:rounded-b-none pt-[102px]'}>
             <Container className={'flex flex-col justify-start items-start pb-8 md:pb-12 lg:pb-24'}>
                 <h1 className={'text-3xl md:text-4xl font-bold text-slate-600 w-[85vw] md:w-[320px] lg:w-full py-2'}>
                     Your Voice. <span className={'text-blue-500'}>Your City.</span> One Click Away.
